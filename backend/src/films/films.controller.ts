@@ -7,12 +7,22 @@ export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
   @Get()
-  async findAll(): Promise<GetFilmsDto[]> {
-    return this.filmsService.findAll();
+  async findAll(): Promise<{ total: number; items: GetFilmsDto[] }> {
+    const items = await this.filmsService.findAll();
+    return {
+      total: items.length,
+      items: items,
+    };
   }
 
   @Get(':id/schedule')
-  async findSchedule(@Param('id') id: string): Promise<GetScheduleDto[]> {
-    return this.filmsService.findScheduleByFilmId(id);
+  async findSchedule(
+    @Param('id') id: string,
+  ): Promise<{ total: number; items: GetScheduleDto[] }> {
+    const items = await this.filmsService.findScheduleByFilmId(id);
+    return {
+      total: items.length,
+      items: items,
+    };
   }
 }

@@ -7,7 +7,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  create(@Body() body: PostOrderDto): string {
-    return 'Заказ создан';
+  async create(@Body() body: PostOrderDto) {
+    return this.orderService.createOrder(body);
   }
 }

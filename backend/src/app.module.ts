@@ -19,7 +19,7 @@ import { FilmsRepository } from './repository/films.repository';
       cache: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.join(__dirname, '..', 'public'),
+      rootPath: path.join(__dirname, '..', 'public', 'content', 'afisha'),
       serveRoot: '/content/afisha',
     }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
