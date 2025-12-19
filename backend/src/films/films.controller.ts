@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { FilmsDto, ScheduleDto } from './dto/films.dto';
+import { GetFilmsDto, GetScheduleDto } from './dto/films.dto';
 import { FilmsService } from './films.service';
 
 @Controller('films')
@@ -7,12 +7,12 @@ export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
   @Get()
-  findAll(): FilmsDto[] {
-    return [];
+  async findAll(): Promise<GetFilmsDto[]> {
+    return this.filmsService.findAll();
   }
 
   @Get(':id/schedule')
-  findSchedule(@Param('id') id: string): ScheduleDto[] {
-    return [];
+  async findSchedule(@Param('id') id: string): Promise<GetScheduleDto[]> {
+    return this.filmsService.findScheduleByFilmId(id);
   }
 }
