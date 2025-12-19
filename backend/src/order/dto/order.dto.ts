@@ -1,1 +1,5 @@
-//TODO реализовать DTO для /orders
+export class OrderDto {
+  email: string;
+  phone: string;
+  tickets: string[];
+}
