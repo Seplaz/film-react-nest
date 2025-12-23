@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-@Schema()
+@Schema({ _id: false })
 export class Schedule {
   @Prop() id: string;
   @Prop() daytime: string;

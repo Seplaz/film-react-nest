@@ -8,7 +8,7 @@ export class FilmsRepository {
   constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
 
   async findAll(): Promise<Film[]> {
-    return this.filmModel.find().exec();
+    return this.filmModel.find({}, { _id: 0, schedule: 0, __v: 0 }).exec();
   }
 
   async findScheduleByFilmId(id: string): Promise<Schedule[]> {
