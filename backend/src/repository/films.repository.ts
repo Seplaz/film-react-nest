@@ -39,4 +39,8 @@ export class FilmsRepository {
       .exec();
     return film?.schedule?.[0] ?? null;
   }
+
+  async findById(id: string): Promise<Film | null> {
+    return this.filmModel.findOne({ id }).exec();
+  }
 }

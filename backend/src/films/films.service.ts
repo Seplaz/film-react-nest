@@ -12,4 +12,8 @@ export class FilmsService {
   async findScheduleByFilmId(id: string) {
     return this.filmsRepository.findScheduleByFilmId(id);
   }
+
+  async findFilmWithSchedule(id: string) {
+    return this.filmsRepository.findById(id);
+  }
 }

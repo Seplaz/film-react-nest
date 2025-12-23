@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { GetFilmsDto, GetScheduleDto } from './dto/films.dto';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { GetFilmsDto } from './dto/films.dto';
 import { FilmsService } from './films.service';
 
 @Controller('films')
@@ -16,13 +16,16 @@ export class FilmsController {
   }
 
   @Get(':id/schedule')
-  async findSchedule(
-    @Param('id') id: string,
-  ): Promise<{ total: number; items: GetScheduleDto[] }> {
-    const items = await this.filmsService.findScheduleByFilmId(id);
+  async findSchedule(@Param('id') id: string) {
+    const film = await this.filmsService.findFilmWithSchedule(id);
+
+    if (!film) {
+      throw new NotFoundException(`Фильм ${id} не найден`);
+    }
+
     return {
-      total: items.length,
-      items: items,
+      total: film.schedule?.length ?? 0,
+      items: film.schedule ?? [],
     };
   }
 }
