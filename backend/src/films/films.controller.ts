@@ -23,9 +23,28 @@ export class FilmsController {
       throw new NotFoundException(`Фильм ${id} не найден`);
     }
 
+    const items = (film.schedule ?? []).map((session) => ({
+      id: session.id,
+      daytime: session.daytime,
+      hall: session.hall,
+      rows: session.rows,
+      seats: session.seats,
+      price: session.price,
+      taken: session.taken,
+    }));
+
     return {
-      total: film.schedule?.length ?? 0,
-      items: film.schedule ?? [],
+      id: film.id,
+      rating: film.rating,
+      director: film.director,
+      tags: film.tags,
+      title: film.title,
+      about: film.about,
+      description: film.description,
+      image: film.image,
+      cover: film.cover,
+      total: items.length,
+      items: items,
     };
   }
 }
