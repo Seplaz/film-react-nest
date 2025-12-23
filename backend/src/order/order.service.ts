@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { FilmsRepository } from '../repository/films.repository';
 import { PostOrderDto, TicketDto } from './dto/order.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class OrderService {
@@ -30,10 +31,24 @@ export class OrderService {
       }
 
       await this.filmsRepository.addTakenSeats(filmId, sessionId, seatsToBook);
-      results.push({ filmId, sessionId, seats: seatsToBook });
+
+      for (const ticket of tickets) {
+        results.push({
+          id: uuidv4,
+          film: ticket.film,
+          session: ticket.session,
+          row: ticket.row,
+          seat: ticket.seat,
+          daytime: session.daytime,
+          price: session.price,
+        });
+      }
     }
 
-    return { success: true, tickets: results };
+    return {
+      total: results.length,
+      items: results,
+    };
   }
 
   private groupTickets(tickets: TicketDto[]): Map<string, TicketDto[]> {
