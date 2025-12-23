@@ -1,7 +1,7 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { FilmsRepository } from '../repository/films.repository';
 import { PostOrderDto, TicketDto } from './dto/order.dto';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class OrderService {
@@ -16,7 +16,10 @@ export class OrderService {
       const session = await this.filmsRepository.getSession(filmId, sessionId);
 
       if (!session) {
-        throw new BadRequestException(`Сеанс ${sessionId} не найден`);
+        throw new HttpException(
+          { error: `Сеанс ${sessionId} не найден` },
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const seatsToBook = tickets.map((t) => `${t.row}:${t.seat}`);
@@ -25,8 +28,9 @@ export class OrderService {
       );
 
       if (alreadyTaken.length > 0) {
-        throw new BadRequestException(
-          `Места уже заняты: ${alreadyTaken.join(', ')}`,
+        throw new HttpException(
+          { error: `Места уже заняты: ${alreadyTaken.join(', ')}` },
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -34,7 +38,7 @@ export class OrderService {
 
       for (const ticket of tickets) {
         results.push({
-          id: uuidv4,
+          id: randomUUID,
           film: ticket.film,
           session: ticket.session,
           row: ticket.row,
