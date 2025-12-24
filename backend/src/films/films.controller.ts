@@ -23,7 +23,7 @@ export class FilmsController {
       throw new NotFoundException(`Фильм ${id} не найден`);
     }
 
-    const schedule = (film.schedule ?? []).map((session) => ({
+    const items = (film.schedule ?? []).map((session) => ({
       id: session.id,
       daytime: session.daytime,
       hall: session.hall,
@@ -34,16 +34,8 @@ export class FilmsController {
     }));
 
     return {
-      id: film.id,
-      rating: film.rating,
-      director: film.director,
-      tags: film.tags,
-      title: film.title,
-      about: film.about,
-      description: film.description,
-      image: film.image,
-      cover: film.cover,
-      schedule: schedule,
+      total: items.length,
+      items: items,
     };
   }
 }
