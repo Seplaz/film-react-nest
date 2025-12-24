@@ -44,8 +44,6 @@ export class FilmsController {
       image: film.image,
       cover: film.cover,
       schedule: schedule,
-      total: schedule.length,
-      items: schedule,
     };
   }
 }
