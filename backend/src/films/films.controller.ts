@@ -25,7 +25,6 @@ export class FilmsController {
 
     const items = (film.schedule ?? []).map((session) => ({
       id: session.id,
-      session: session.id,
       daytime: session.daytime,
       hall: session.hall,
       rows: session.rows,
