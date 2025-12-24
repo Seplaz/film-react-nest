@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { FilmsRepository } from '../repository/films.repository';
-import { PostOrderDto, TicketDto } from './dto/order.dto';
+import { PostOrderDto } from './dto/order.dto';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -9,11 +9,25 @@ export class OrderService {
 
   async createOrder(order: PostOrderDto) {
     const results = [];
-    const grouped = this.groupTickets(order.tickets);
 
-    for (const [key, tickets] of grouped) {
-      const [filmId, sessionId] = key.split('|');
-      const session = await this.filmsRepository.getSession(filmId, sessionId);
+    for (const ticket of order.tickets) {
+      let sessionId = ticket.session;
+
+      if (!sessionId) {
+        const film = await this.filmsRepository.findById(ticket.film);
+        if (!film || !film.schedule || film.schedule.length === 0) {
+          throw new HttpException(
+            { error: `Фильм ${ticket.film} не найден или нет сеансов` },
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        sessionId = film.schedule[0].id;
+      }
+
+      const session = await this.filmsRepository.getSession(
+        ticket.film,
+        sessionId,
+      );
 
       if (!session) {
         throw new HttpException(
@@ -22,49 +36,33 @@ export class OrderService {
         );
       }
 
-      const seatsToBook = tickets.map((t) => `${t.row}:${t.seat}`);
-      const alreadyTaken = seatsToBook.filter((seat) =>
-        session.taken?.includes(seat),
-      );
+      const seatKey = `${ticket.row}:${ticket.seat}`;
 
-      if (alreadyTaken.length > 0) {
+      if (session.taken?.includes(seatKey)) {
         throw new HttpException(
-          { error: `Места уже заняты: ${alreadyTaken.join(', ')}` },
+          { error: `Место ${seatKey} уже занято` },
           HttpStatus.BAD_REQUEST,
         );
       }
 
-      await this.filmsRepository.addTakenSeats(filmId, sessionId, seatsToBook);
+      await this.filmsRepository.addTakenSeats(ticket.film, sessionId, [
+        seatKey,
+      ]);
 
-      for (const ticket of tickets) {
-        results.push({
-          id: randomUUID,
-          film: ticket.film,
-          session: ticket.session,
-          row: ticket.row,
-          seat: ticket.seat,
-          daytime: session.daytime,
-          price: session.price,
-        });
-      }
+      results.push({
+        id: randomUUID(),
+        film: ticket.film,
+        session: sessionId,
+        row: ticket.row,
+        seat: ticket.seat,
+        daytime: session.daytime,
+        price: session.price,
+      });
     }
 
     return {
       total: results.length,
       items: results,
     };
-  }
-
-  private groupTickets(tickets: TicketDto[]): Map<string, TicketDto[]> {
-    const map = new Map<string, TicketDto[]>();
-
-    for (const ticket of tickets) {
-      const key = `${ticket.film}|${ticket.session}`;
-
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(ticket);
-    }
-
-    return map;
   }
 }
