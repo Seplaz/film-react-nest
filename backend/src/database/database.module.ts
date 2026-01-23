@@ -10,7 +10,6 @@ import { Schedule } from '../films/entities/schedule.entity';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        name: 'default',
         host:
           configService
             .get<string>('DATABASE_URL')
