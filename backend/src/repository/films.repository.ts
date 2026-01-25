@@ -26,6 +26,7 @@ export class FilmsRepository {
         'image',
         'cover',
       ],
+      relations: ['schedule'],
     });
   }
 

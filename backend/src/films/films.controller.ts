@@ -9,9 +9,47 @@ export class FilmsController {
   @Get()
   async findAll(): Promise<{ total: number; items: GetFilmsDto[] }> {
     const items = await this.filmsService.findAll();
+    const itemsWithSchedule = items.map((film) => ({
+      ...film,
+      schedule: (film.schedule ?? []).map((session) => ({
+        id: session.id,
+        session: session.id,
+        daytime: session.daytime,
+        hall: session.hall,
+        rows: session.rows,
+        seats: session.seats,
+        price: session.price,
+        taken: session.taken,
+      })),
+    }));
     return {
-      total: items.length,
-      items: items,
+      total: itemsWithSchedule.length,
+      items: itemsWithSchedule,
+    };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const film = await this.filmsService.findFilmWithSchedule(id);
+
+    if (!film) {
+      throw new NotFoundException(`Фильм ${id} не найден`);
+    }
+
+    const schedule = (film.schedule ?? []).map((session) => ({
+      id: session.id,
+      session: session.id,
+      daytime: session.daytime,
+      hall: session.hall,
+      rows: session.rows,
+      seats: session.seats,
+      price: session.price,
+      taken: session.taken,
+    }));
+
+    return {
+      ...film,
+      schedule: schedule,
     };
   }
 
@@ -27,7 +65,7 @@ export class FilmsController {
       id: session.id,
       session: session.id,
       daytime: session.daytime,
-      hall: Number(session.hall),
+      hall: session.hall,
       rows: session.rows,
       seats: session.seats,
       price: session.price,
