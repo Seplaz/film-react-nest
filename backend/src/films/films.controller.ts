@@ -20,7 +20,7 @@ export class FilmsController {
         rows: session.rows,
         seats: session.seats,
         price: session.price,
-        taken: session.taken,
+        taken: Array.isArray(session.taken) ? session.taken : (session.taken === '' ? [] : [session.taken]),
       })),
     }));
     return {
@@ -45,7 +45,7 @@ export class FilmsController {
       rows: session.rows,
       seats: session.seats,
       price: session.price,
-      taken: session.taken,
+      taken: Array.isArray(session.taken) ? session.taken : (session.taken === '' ? [] : [session.taken]),
     }));
 
     return {
@@ -71,7 +71,7 @@ export class FilmsController {
       rows: session.rows,
       seats: session.seats,
       price: session.price,
-      taken: session.taken,
+      taken: Array.isArray(session.taken) ? session.taken : (session.taken === '' ? [] : [session.taken]),
     }));
 
     return {
