@@ -20,6 +20,9 @@ import { FilmsRepository } from './repository/films.repository';
     ServeStaticModule.forRoot({
       rootPath: path.join(process.cwd(), 'public', 'content', 'afisha'),
       serveRoot: '/content/afisha',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     DatabaseModule,
   ],

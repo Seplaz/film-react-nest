@@ -11,6 +11,7 @@ export class FilmsController {
     const items = await this.filmsService.findAll();
     const itemsWithSchedule = items.map((film) => ({
       ...film,
+      tags: Array.isArray(film.tags) ? film.tags : [film.tags],
       schedule: (film.schedule ?? []).map((session) => ({
         id: session.id,
         session: session.id,
@@ -49,6 +50,7 @@ export class FilmsController {
 
     return {
       ...film,
+      tags: Array.isArray(film.tags) ? film.tags : [film.tags],
       schedule: schedule,
     };
   }
