@@ -1,4 +1,4 @@
-import { IsFQDN, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class GetFilmsDto {
   @IsString()
@@ -14,9 +14,9 @@ export class GetFilmsDto {
   about: string;
   @IsString()
   description: string;
-  @IsFQDN()
+  @IsString()
   image: string;
-  @IsFQDN()
+  @IsString()
   cover: string;
 }
 
