@@ -1,4 +1,4 @@
-import { IsFQDN, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class GetFilmsDto {
   @IsString()
@@ -7,6 +7,8 @@ export class GetFilmsDto {
   rating: number;
   @IsString()
   director: string;
+  @IsArray()
+  @IsString({ each: true })
   tags: string[];
   @IsString()
   title: string;
@@ -14,10 +16,11 @@ export class GetFilmsDto {
   about: string;
   @IsString()
   description: string;
-  @IsFQDN()
+  @IsString()
   image: string;
-  @IsFQDN()
+  @IsString()
   cover: string;
+  schedule: GetScheduleDto[];
 }
 
 export class GetScheduleDto {
