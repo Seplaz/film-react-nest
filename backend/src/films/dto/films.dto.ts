@@ -1,1 +1,37 @@
-//TODO описать DTO для запросов к /films
+import { IsFQDN, IsNumber, IsString } from 'class-validator';
+
+export class GetFilmsDto {
+  @IsString()
+  id: string;
+  @IsNumber()
+  rating: number;
+  @IsString()
+  director: string;
+  tags: string[];
+  @IsString()
+  title: string;
+  @IsString()
+  about: string;
+  @IsString()
+  description: string;
+  @IsFQDN()
+  image: string;
+  @IsFQDN()
+  cover: string;
+}
+
+export class GetScheduleDto {
+  @IsString()
+  id: string;
+  @IsString()
+  daytime: string;
+  @IsString()
+  hall: string;
+  @IsNumber()
+  rows: number;
+  @IsNumber()
+  seats: number;
+  @IsNumber()
+  price: number;
+  taken: string[];
+}
